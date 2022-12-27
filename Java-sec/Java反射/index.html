@@ -38,7 +38,7 @@
 <meta property="og:image" content="https://gitee.com/lcwzl/zeroc/raw/master/img/202212271635840.png">
 <meta property="og:image" content="https://gitee.com/lcwzl/zeroc/raw/master/img/202212271650381.png">
 <meta property="article:published_time" content="2022-12-27T07:11:42.000Z">
-<meta property="article:modified_time" content="2022-12-27T08:56:20.416Z">
+<meta property="article:modified_time" content="2022-12-27T09:01:27.321Z">
 <meta property="article:author" content="Zeroc">
 <meta property="article:tag" content="Java">
 <meta name="twitter:card" content="summary">
@@ -230,7 +230,7 @@
               <span class="post-meta-item-text">Posted on</span>
               
 
-              <time title="Created: 2022-12-27 15:11:42 / Modified: 16:56:20" itemprop="dateCreated datePublished" datetime="2022-12-27T15:11:42+08:00">2022-12-27</time>
+              <time title="Created: 2022-12-27 15:11:42 / Modified: 17:01:27" itemprop="dateCreated datePublished" datetime="2022-12-27T15:11:42+08:00">2022-12-27</time>
             </span>
             <span class="post-meta-item">
               <span class="post-meta-item-icon">
@@ -305,7 +305,7 @@
 <p>上述代码相应的利用反射的代码为：</p>
 <figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title function_">main</span><span class="params">(String[] argv)</span> <span class="keyword">throws</span> Exception &#123;</span><br><span class="line">        Class.forName(<span class="string">&quot;java.lang.Runtime&quot;</span>).getMethod(<span class="string">&quot;exec&quot;</span>, String.class).invoke(Class.forName(<span class="string">&quot;java.lang.Runtime&quot;</span>).getMethod(<span class="string">&quot;getRuntime&quot;</span>, <span class="keyword">new</span> <span class="title class_">Class</span>[]&#123;&#125;).invoke(<span class="literal">null</span>), <span class="string">&quot;calc.exe&quot;</span>);</span><br><span class="line">    &#125;</span><br><span class="line">or</span><br><span class="line"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title function_">main</span><span class="params">(String[] argv)</span> <span class="keyword">throws</span> Exception &#123;</span><br><span class="line">        Class.forName(<span class="string">&quot;java.lang.Runtime&quot;</span>).getMethod(<span class="string">&quot;exec&quot;</span>, String.class).invoke(Class.forName(<span class="string">&quot;java.lang.Runtime&quot;</span>).getMethod(<span class="string">&quot;getRuntime&quot;</span>).invoke(Class.forName(<span class="string">&quot;java.lang.Runtime&quot;</span>)), <span class="string">&quot;calc.exe&quot;</span>);</span><br><span class="line">    &#125;</span><br></pre></td></tr></table></figure>
 <p><img src="https://gitee.com/lcwzl/zeroc/raw/master/img/202212271540893.png" alt=""></p>
-<p>咋一看去这代码又臭又长，但是接下来我们将它分解开其实就好理解了。</p>
+<p>乍一看去这代码又臭又长，但是接下来我们将它分解开其实就好理解了。</p>
 <p>先介绍反射中重要的几个方法。</p>
 <h3 id="相关方法"><a href="#相关方法" class="headerlink" title="相关方法"></a>相关方法</h3><h4 id="forName"><a href="#forName" class="headerlink" title="forName"></a><code>forName</code></h4><p><strong>获取类的方法</strong><code>forName</code>，实际上java中获取类的方法很多，比如：</p>
 <p>1、<code>类名.class</code></p>
