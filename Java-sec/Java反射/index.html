@@ -1,0 +1,700 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 6.3.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon.ico">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon16x16.ico">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/all.min.css">
+  <link rel="stylesheet" href="//cdn.jsdelivr.net/gh/fancyapps/fancybox@3/dist/jquery.fancybox.min.css">
+  <link rel="stylesheet" href="/lib/pace/pace-theme-minimal.min.css">
+  <script src="/lib/pace/pace.min.js"></script>
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"example.com","root":"/","scheme":"Pisces","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":true,"show_result":true,"style":"mac"},"back2top":{"enable":true,"sidebar":false,"scrollpercent":true},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":true,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},"path":"search.xml"};
+  </script>
+
+  <meta name="description" content="Java反射慢慢入门Java-SEC吧">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Java反射">
+<meta property="og:url" content="http://example.com/Java-sec/Java%E5%8F%8D%E5%B0%84/index.html">
+<meta property="og:site_name" content="Zeroc&amp;小破站">
+<meta property="og:description" content="Java反射慢慢入门Java-SEC吧">
+<meta property="og:locale" content="en_US">
+<meta property="og:image" content="https://gitee.com/lcwzl/zeroc/raw/master/img/202212271529030.png">
+<meta property="og:image" content="https://gitee.com/lcwzl/zeroc/raw/master/img/202212271540893.png">
+<meta property="og:image" content="https://gitee.com/lcwzl/zeroc/raw/master/img/202212271552650.png">
+<meta property="og:image" content="https://gitee.com/lcwzl/zeroc/raw/master/img/202212271557184.png">
+<meta property="og:image" content="https://gitee.com/lcwzl/zeroc/raw/master/img/202212271633716.png">
+<meta property="og:image" content="https://gitee.com/lcwzl/zeroc/raw/master/img/202212271635840.png">
+<meta property="og:image" content="https://gitee.com/lcwzl/zeroc/raw/master/img/202212271650381.png">
+<meta property="article:published_time" content="2022-12-27T07:11:42.000Z">
+<meta property="article:modified_time" content="2022-12-27T08:56:20.416Z">
+<meta property="article:author" content="Zeroc">
+<meta property="article:tag" content="Java">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://gitee.com/lcwzl/zeroc/raw/master/img/202212271529030.png">
+
+<link rel="canonical" href="http://example.com/Java-sec/Java%E5%8F%8D%E5%B0%84/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'en'
+  };
+</script>
+
+  <title>Java反射 | Zeroc&小破站</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="Toggle navigation bar">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">Zeroc&小破站</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+      <p class="site-subtitle" itemprop="description">多找自身原因</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+        <i class="fa fa-search fa-fw fa-lg"></i>
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="main-menu menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-home fa-fw"></i>Home</a>
+
+  </li>
+        <li class="menu-item menu-item-about">
+
+    <a href="/about/" rel="section"><i class="fa fa-user fa-fw"></i>About</a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>Tags<span class="badge">2</span></a>
+
+  </li>
+        <li class="menu-item menu-item-categories">
+
+    <a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>Categories<span class="badge">2</span></a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>Archives<span class="badge">4</span></a>
+
+  </li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>Search
+        </a>
+      </li>
+  </ul>
+</nav>
+
+
+
+  <div class="search-pop-overlay">
+    <div class="popup search-popup">
+        <div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container">
+    <input autocomplete="off" autocapitalize="off"
+           placeholder="Searching..." spellcheck="false"
+           type="search" class="search-input">
+  </div>
+  <span class="popup-btn-close">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div id="search-result">
+  <div id="no-result">
+    <i class="fa fa-spinner fa-pulse fa-5x fa-fw"></i>
+  </div>
+</div>
+
+    </div>
+  </div>
+
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content post posts-expand">
+            
+
+    
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="en">
+    <link itemprop="mainEntityOfPage" href="http://example.com/Java-sec/Java%E5%8F%8D%E5%B0%84/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.jpg">
+      <meta itemprop="name" content="Zeroc">
+      <meta itemprop="description" content="莫忘少年凌云志，曾许天下第一流">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Zeroc&小破站">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          Java反射
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">Posted on</span>
+              
+
+              <time title="Created: 2022-12-27 15:11:42 / Modified: 16:56:20" itemprop="dateCreated datePublished" datetime="2022-12-27T15:11:42+08:00">2022-12-27</time>
+            </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">In</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Java-sec/" itemprop="url" rel="index"><span itemprop="name">Java-sec</span></a>
+                </span>
+            </span>
+
+          
+            <span class="post-meta-item" title="Views" id="busuanzi_container_page_pv" style="display: none;">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-eye"></i>
+              </span>
+              <span class="post-meta-item-text">Views: </span>
+              <span id="busuanzi_value_page_pv"></span>
+            </span><br>
+            <span class="post-meta-item" title="Symbols count in article">
+              <span class="post-meta-item-icon">
+                <i class="far fa-file-word"></i>
+              </span>
+                <span class="post-meta-item-text">Symbols count in article: </span>
+              <span>4.3k</span>
+            </span>
+            <span class="post-meta-item" title="Reading time">
+              <span class="post-meta-item-icon">
+                <i class="far fa-clock"></i>
+              </span>
+                <span class="post-meta-item-text">Reading time &asymp;</span>
+              <span>4 mins.</span>
+            </span>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <h1 id="Java反射"><a href="#Java反射" class="headerlink" title="Java反射"></a>Java反射</h1><p>慢慢入门<strong>Java-SEC</strong>吧</p>
+<meta name="referrer" content="no-referrer"/>
+
+<span id="more"></span>
+<h2 id="基础概念"><a href="#基础概念" class="headerlink" title="基础概念"></a>基础概念</h2><p>java反射机制是反序列化的基础知识，这里介绍一些java反序列化中的一些常见概念：</p>
+<ul>
+<li><code>source</code>：入口</li>
+<li><code>gadget chain</code>：调用链</li>
+<li><code>sink</code>：目标方法</li>
+<li><code>RMI</code>：Remote Method Invocation远程方法调用</li>
+</ul>
+<p>利用反序列化漏洞就是在已知source和sink的情况下，如何走通整个流程的问题。</p>
+<p>在CTF的题目中，我们一般都是希望通过反序列化进行RCE等操作。</p>
+<p>常见的<code>source</code>包括：</p>
+<ul>
+<li><strong>java的原生反序列化</strong>：通过<code>ObjectInputStream.readObject()</code>来处理二进制格式的序列化内容得到反序列化后的java对象。</li>
+<li><code>Fastjson、Xstream等第三方库</code>：处理<code>json、xml</code>等格式的内容，得到java对象。</li>
+</ul>
+<p><code>sink</code>包括：</p>
+<ul>
+<li><code>Runtime.exec()</code>，能够直接在目标环境中进行命令执行。</li>
+<li><code>Method.Invoke()</code>，通过反射执行。</li>
+<li><code>RMI/JNDI/JRMP</code>，通过远程引用对象，间接命令执行。</li>
+</ul>
+<h2 id="反射"><a href="#反射" class="headerlink" title="反射"></a>反射</h2><h3 id="引入"><a href="#引入" class="headerlink" title="引入"></a>引入</h3><p>一段正常的执行系统命令的代码：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title function_">main</span><span class="params">(String[] argv)</span> <span class="keyword">throws</span> Exception &#123;</span><br><span class="line">        Runtime.getRuntime().exec(<span class="string">&quot;calc.exe&quot;</span>);</span><br><span class="line">    &#125;</span><br></pre></td></tr></table></figure>
+<p><img src="https://gitee.com/lcwzl/zeroc/raw/master/img/202212271529030.png" alt=""></p>
+<p>这里的<code>getRuntime()</code>是java中的单例模式，因为<code>Runtime</code>类的构造函数是私有的，无法直接获取，只能通过<code>getRuntime()</code>获得对象。</p>
+<p>上述代码相应的利用反射的代码为：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title function_">main</span><span class="params">(String[] argv)</span> <span class="keyword">throws</span> Exception &#123;</span><br><span class="line">        Class.forName(<span class="string">&quot;java.lang.Runtime&quot;</span>).getMethod(<span class="string">&quot;exec&quot;</span>, String.class).invoke(Class.forName(<span class="string">&quot;java.lang.Runtime&quot;</span>).getMethod(<span class="string">&quot;getRuntime&quot;</span>, <span class="keyword">new</span> <span class="title class_">Class</span>[]&#123;&#125;).invoke(<span class="literal">null</span>), <span class="string">&quot;calc.exe&quot;</span>);</span><br><span class="line">    &#125;</span><br><span class="line">or</span><br><span class="line"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title function_">main</span><span class="params">(String[] argv)</span> <span class="keyword">throws</span> Exception &#123;</span><br><span class="line">        Class.forName(<span class="string">&quot;java.lang.Runtime&quot;</span>).getMethod(<span class="string">&quot;exec&quot;</span>, String.class).invoke(Class.forName(<span class="string">&quot;java.lang.Runtime&quot;</span>).getMethod(<span class="string">&quot;getRuntime&quot;</span>).invoke(Class.forName(<span class="string">&quot;java.lang.Runtime&quot;</span>)), <span class="string">&quot;calc.exe&quot;</span>);</span><br><span class="line">    &#125;</span><br></pre></td></tr></table></figure>
+<p><img src="https://gitee.com/lcwzl/zeroc/raw/master/img/202212271540893.png" alt=""></p>
+<p>咋一看去这代码又臭又长，但是接下来我们将它分解开其实就好理解了。</p>
+<p>先介绍反射中重要的几个方法。</p>
+<h3 id="相关方法"><a href="#相关方法" class="headerlink" title="相关方法"></a>相关方法</h3><h4 id="forName"><a href="#forName" class="headerlink" title="forName"></a><code>forName</code></h4><p><strong>获取类的方法</strong><code>forName</code>，实际上java中获取类的方法很多，比如：</p>
+<p>1、<code>类名.class</code></p>
+<p>2、<code>对象名.getClass()</code>，上下文中有某个类的实例，则可以通过<code>getClass()</code>来获取该实例的类。</p>
+<p>3、<code>Class.forName(&quot;需要加载的类名&quot;)</code>，知道某个类的名字，可以通过<code>forName</code>来获取。</p>
+<p>获得类之后，我们就可以使用反射来获取这个类中的属性、方法，也可以实例化这个类来调用方法。</p>
+<h4 id="newInstance"><a href="#newInstance" class="headerlink" title="newInstance"></a><code>newInstance</code></h4><p><strong>实例化类对象的方法</strong>，接收的参数是一个可变长参数，<strong>只能调用无参构造函数</strong>。</p>
+<p><code>Class.newInstance()</code>以下情况下会<strong>失败</strong>：</p>
+<p>1、类没有无参构造函数；</p>
+<p>2、类的构造函数是<code>private</code>，无法调用。</p>
+<p>具体可以使用<code>java.lang.Runtime</code>来试验：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title function_">main</span><span class="params">(String[] argv)</span> <span class="keyword">throws</span> Exception &#123;</span><br><span class="line">        <span class="type">Class</span> <span class="variable">c</span> <span class="operator">=</span> Class.forName(<span class="string">&quot;java.lang.Runtime&quot;</span>);</span><br><span class="line">        <span class="type">Runtime</span> <span class="variable">r</span> <span class="operator">=</span> (Runtime) c.newInstance();</span><br><span class="line">    &#125;</span><br></pre></td></tr></table></figure>
+<p>会得到以下报错：</p>
+<p><img src="https://gitee.com/lcwzl/zeroc/raw/master/img/202212271552650.png" alt=""></p>
+<h4 id="getMethod"><a href="#getMethod" class="headerlink" title="getMethod"></a><code>getMethod</code></h4><p>获取类的<code>public</code>方法，需要注意的是，这里支持类的重载，<strong>需要同时传递参数类型</strong>。</p>
+<p>比如<code>Runtime.exec</code>有六个重载：</p>
+<p><img src="https://gitee.com/lcwzl/zeroc/raw/master/img/202212271557184.png" alt=""></p>
+<h4 id="invoke"><a href="#invoke" class="headerlink" title="invoke"></a><code>invoke</code></h4><p>执行方法，特别注意的是它的参数：</p>
+<p>1、若方法是<strong>普通方法</strong>，那么第一个参数是<strong>类对象</strong>；</p>
+<p>2、若方法是<strong>静态方法</strong>，那么第一个参数是<strong>类</strong>。</p>
+<p>也就是说<strong>正常的调用方法是<code>[1].method([2],[3],...)</code>，那么<code>invoke</code>就是<code>method.invoke([1],[2],[3],...)</code></strong>。</p>
+<p>那么接下来我们将上面反射代码的逻辑细分一下：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title function_">main</span><span class="params">(String[] argv)</span> <span class="keyword">throws</span> Exception &#123;</span><br><span class="line">        <span class="type">Class</span> <span class="variable">c</span> <span class="operator">=</span> Class.forName(<span class="string">&quot;java.lang.Runtime&quot;</span>); <span class="comment">//获得Runtime类</span></span><br><span class="line">        <span class="type">Method</span> <span class="variable">execMethod</span> <span class="operator">=</span> c.getMethod(<span class="string">&quot;exec&quot;</span>, String.class); <span class="comment">//获得Runtime类的exec方法</span></span><br><span class="line">        <span class="type">Method</span> <span class="variable">getRuntimeMethod</span> <span class="operator">=</span> c.getMethod(<span class="string">&quot;getRuntime&quot;</span>); <span class="comment">//得到Runtime中getRuntime方法来实例化Runtime类</span></span><br><span class="line">        <span class="type">Object</span> <span class="variable">runtime</span> <span class="operator">=</span> getRuntimeMethod.invoke(c); <span class="comment">//得到Runtime的一个对象</span></span><br><span class="line">        execMethod.invoke(runtime, <span class="string">&quot;calc.exe&quot;</span>); <span class="comment">//利用这个对象执行类里的方法</span></span><br><span class="line">    &#125;</span><br></pre></td></tr></table></figure>
+<p>开始提到类没有无参构造函数时<code>newInstance()</code>会失效，那么没有无参构造方法和单例模式的静态方法时利用<code>getConstructor</code>来实例化类。</p>
+<h4 id="getConstructor"><a href="#getConstructor" class="headerlink" title="getConstructor"></a><code>getConstructor</code></h4><p><code>getConstructor</code>接收的参数是<strong>构造函数列表类型</strong>，因为构造函数也支持重载，所以必须用参数列表类型才能唯一确定一个构造函数。需要注意的是，其返回的是<strong><code>Class</code>对象对应的构造方法类，一般需要进行类型转换</strong>。</p>
+<p>demo：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title function_">main</span><span class="params">(String[] argv)</span> <span class="keyword">throws</span> Exception &#123;</span><br><span class="line">        <span class="type">Class</span> <span class="variable">c</span> <span class="operator">=</span> Class.forName(<span class="string">&quot;java.lang.ProcessBuilder&quot;</span>); <span class="comment">//获取ProcessBuilder类</span></span><br><span class="line">        <span class="type">Constructor</span> <span class="variable">con</span> <span class="operator">=</span> c.getConstructor(List.class); <span class="comment">//获取ProcessBuilder类的以List为参数的构造方法</span></span><br><span class="line">        <span class="type">ProcessBuilder</span> <span class="variable">p</span> <span class="operator">=</span> (ProcessBuilder) con.newInstance(Collections.singletonList(<span class="string">&quot;calc.exe&quot;</span>)); <span class="comment">//通过构造方法实例化一个ProcessBuilder对象</span></span><br><span class="line">        p.start(); <span class="comment">//执行start()方法，也就是执行传入的command参数代表的系统命令</span></span><br><span class="line">    &#125;</span><br></pre></td></tr></table></figure>
+<p>注意到这里使用了强制类型转换，那么不使用强制类型转换的写法如下：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title function_">main</span><span class="params">(String[] argv)</span> <span class="keyword">throws</span> Exception &#123;</span><br><span class="line">        <span class="type">Class</span> <span class="variable">c</span> <span class="operator">=</span> Class.forName(<span class="string">&quot;java.lang.ProcessBuilder&quot;</span>); <span class="comment">//获取ProcessBuilder类</span></span><br><span class="line">        <span class="type">Method</span> <span class="variable">startMethod</span> <span class="operator">=</span> c.getMethod(<span class="string">&quot;start&quot;</span>); <span class="comment">//获取ProcessBuilder中的start方法</span></span><br><span class="line">        <span class="type">Constructor</span> <span class="variable">con</span> <span class="operator">=</span> c.getConstructor(List.class); <span class="comment">//获取ProcessBuilder中以List为参数的构造方法</span></span><br><span class="line">        <span class="type">Object</span> <span class="variable">ProcessBuilderObject</span> <span class="operator">=</span> con.newInstance(Collections.singletonList(<span class="string">&quot;calc.exe&quot;</span>)); <span class="comment">//利用构造方法获取ProcessBuilder的一个实例并将ProcessBuilder中的command属性赋为calc.exe</span></span><br><span class="line">        startMethod.invoke(ProcessBuilderObject); <span class="comment">//调用对象的start方法进行命令执行</span></span><br><span class="line">    &#125;</span><br></pre></td></tr></table></figure>
+<p><img src="https://gitee.com/lcwzl/zeroc/raw/master/img/202212271633716.png" alt=""></p>
+<p>我们也可以看看<code>ProcessBuilder</code>类的构造方法：</p>
+<p><img src="https://gitee.com/lcwzl/zeroc/raw/master/img/202212271635840.png" alt=""></p>
+<p>可以看到有两种带参的构造方法，一种参数为<code>List&lt;String&gt;</code>，另一种为<code>String ...</code>，这是java中的可变长参数，在底层上可以与数组等价，也就是说<code>String ...==String[]</code>。</p>
+<h4 id="getDeclared"><a href="#getDeclared" class="headerlink" title="getDeclared"></a><code>getDeclared</code></h4><p><code>getDeclared</code>系列的方法用来获取类中“声明”的方法，包括<code>private</code>方法，但不包括从父类继承的方法。</p>
+<p>前文中提到过<code>Runtime</code>这个类的构造函数是私有的，那么我们可以通过<code>getDeclaredConstructor</code>来获取这个<strong>私有的构造方法</strong>来实例化对象，进而进行命令执行。</p>
+<p>demo：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title function_">main</span><span class="params">(String[] argv)</span> <span class="keyword">throws</span> Exception &#123;</span><br><span class="line">        <span class="type">Class</span> <span class="variable">c</span> <span class="operator">=</span> Class.forName(<span class="string">&quot;java.lang.Runtime&quot;</span>);</span><br><span class="line">        <span class="type">Constructor</span> <span class="variable">m</span> <span class="operator">=</span> c.getDeclaredConstructor();</span><br><span class="line">        m.setAccessible(<span class="literal">true</span>); <span class="comment">//setAccessible用来修改作用域</span></span><br><span class="line">        c.getMethod(<span class="string">&quot;exec&quot;</span>, String.class).invoke(m.newInstance(), <span class="string">&quot;calc.exe&quot;</span>);</span><br><span class="line">    &#125;</span><br></pre></td></tr></table></figure>
+<p><img src="https://gitee.com/lcwzl/zeroc/raw/master/img/202212271650381.png" alt=""></p>
+<p>这里用到了一个方法<code>setAccessible</code>，作用是在传参为<code>true</code>时指示反射的对象在使用时应该取消 <strong>Java 语言访问检查</strong>。以此来调用<code>private</code>方法或变量。</p>
+<p>基本的java反射相关内容就记录到这里，更加深入的知识就需要在题目中碰到后再去学习，上述内容参考P神的代码审计星球相关内容，同时加上了一些官方文档的内容。</p>
+
+    </div>
+
+    
+    
+    
+
+      <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/Java/" rel="tag"># Java</a>
+          </div>
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/CTF-WP/RCTF2022/" rel="prev" title="RCTF2022">
+      <i class="fa fa-chevron-left"></i> RCTF2022
+    </a></div>
+      <div class="post-nav-item"></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+
+
+          </div>
+          
+    <div class="comments" id="gitalk-container"></div>
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          Table of Contents
+        </li>
+        <li class="sidebar-nav-overview">
+          Overview
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#Java%E5%8F%8D%E5%B0%84"><span class="nav-number">1.</span> <span class="nav-text">Java反射</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%9F%BA%E7%A1%80%E6%A6%82%E5%BF%B5"><span class="nav-number">1.1.</span> <span class="nav-text">基础概念</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%8F%8D%E5%B0%84"><span class="nav-number">1.2.</span> <span class="nav-text">反射</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%BC%95%E5%85%A5"><span class="nav-number">1.2.1.</span> <span class="nav-text">引入</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E7%9B%B8%E5%85%B3%E6%96%B9%E6%B3%95"><span class="nav-number">1.2.2.</span> <span class="nav-text">相关方法</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#forName"><span class="nav-number">1.2.2.1.</span> <span class="nav-text">forName</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#newInstance"><span class="nav-number">1.2.2.2.</span> <span class="nav-text">newInstance</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#getMethod"><span class="nav-number">1.2.2.3.</span> <span class="nav-text">getMethod</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#invoke"><span class="nav-number">1.2.2.4.</span> <span class="nav-text">invoke</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#getConstructor"><span class="nav-number">1.2.2.5.</span> <span class="nav-text">getConstructor</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#getDeclared"><span class="nav-number">1.2.2.6.</span> <span class="nav-text">getDeclared</span></a></li></ol></li></ol></li></ol></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="Zeroc"
+      src="/images/avatar.jpg">
+  <p class="site-author-name" itemprop="name">Zeroc</p>
+  <div class="site-description" itemprop="description">莫忘少年凌云志，曾许天下第一流</div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">4</span>
+          <span class="site-state-item-name">posts</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+          
+        <span class="site-state-item-count">2</span>
+        <span class="site-state-item-name">categories</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+          
+        <span class="site-state-item-count">2</span>
+        <span class="site-state-item-name">tags</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author motion-element">
+      <span class="links-of-author-item">
+        <a href="https://github.com/Zeroc0077" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;Zeroc0077" rel="noopener" target="_blank"><i class="fab fa-github fa-fw"></i>GitHub</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="/1357494951@qq.com" title="E-Mail → 1357494951@qq.com"><i class="fa fa-envelope fa-fw"></i>E-Mail</a>
+      </span>
+  </div>
+
+
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2022</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Zeroc</span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item-icon">
+      <i class="fa fa-chart-area"></i>
+    </span>
+      <span class="post-meta-item-text">Symbols count total: </span>
+    <span title="Symbols count total">72k</span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item-icon">
+      <i class="fa fa-coffee"></i>
+    </span>
+      <span class="post-meta-item-text">Reading time total &asymp;</span>
+    <span title="Reading time total">1:05</span>
+</div>
+
+<div class="powered-by">
+  <i class="fa fa-user-md"></i>
+  <span id="busuanzi_container_site_uv">
+    本站总访客数:<span id="busuanzi_value_site_uv"></span>&nbsp;&nbsp;| 
+  </span>
+  <span id="busuanzi_container_site_pv">
+      &nbsp;本站总访问量<span id="busuanzi_value_site_pv"></span>次
+  </span>
+  </div>
+</div>
+
+<script>
+      var now = new Date(); 
+      function createtime() { 
+          var grt= new Date("20/11/2022 12:00:00");//此处修改你的建站时间或者网站上线时间 
+          now.setTime(now.getTime()+250); 
+          days = (now - grt ) / 1000 / 60 / 60 / 24; dnum = Math.floor(days); 
+          hours = (now - grt ) / 1000 / 60 / 60 - (24 * dnum); hnum = Math.floor(hours); 
+          if(String(hnum).length ==1 ){hnum = "0" + hnum;} minutes = (now - grt ) / 1000 /60 - (24 * 60 * dnum) - (60 * hnum); 
+          mnum = Math.floor(minutes); if(String(mnum).length ==1 ){mnum = "0" + mnum;} 
+          seconds = (now - grt ) / 1000 - (24 * 60 * 60 * dnum) - (60 * 60 * hnum) - (60 * mnum); 
+          snum = Math.round(seconds); if(String(snum).length ==1 ){snum = "0" + snum;} 
+          document.getElementById("timeDate").innerHTML = "本站已安全运行 "+dnum+" 天 "; 
+          document.getElementById("times").innerHTML = hnum + " 小时 " + mnum + " 分 " + snum + " 秒"; 
+      } 
+  setInterval("createtime()",250);
+</script>
+
+        
+<div class="busuanzi-count">
+  <script async src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+    <span class="post-meta-item" id="busuanzi_container_site_uv" style="display: none;">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-user"></i>
+      </span>
+      <span class="site-uv" title="Total Visitors">
+        <span id="busuanzi_value_site_uv"></span>
+      </span>
+    </span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item" id="busuanzi_container_site_pv" style="display: none;">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-eye"></i>
+      </span>
+      <span class="site-pv" title="Total Views">
+        <span id="busuanzi_value_site_pv"></span>
+      </span>
+    </span>
+</div>
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script color='' opacity='' zIndex='' count='' src="/lib/canvas-nest/canvas-nest-nomobile.min.js"></script>
+  <script size="300" alpha="0.6" zIndex="-1" src="/lib/canvas-ribbon/canvas-ribbon.js"></script>
+  <script src="/lib/anime.min.js"></script>
+  <script src="//cdn.jsdelivr.net/npm/jquery@3/dist/jquery.min.js"></script>
+  <script src="//cdn.jsdelivr.net/gh/fancyapps/fancybox@3/dist/jquery.fancybox.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/pisces.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+
+
+  
+
+
+
+
+  
+<script src="/js/local-search.js"></script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+      
+
+<script>
+  if (typeof MathJax === 'undefined') {
+    window.MathJax = {
+      loader: {
+        source: {
+          '[tex]/amsCd': '[tex]/amscd',
+          '[tex]/AMScd': '[tex]/amscd'
+        }
+      },
+      tex: {
+        inlineMath: {'[+]': [['$', '$']]},
+        tags: 'ams'
+      },
+      options: {
+        renderActions: {
+          findScript: [10, doc => {
+            document.querySelectorAll('script[type^="math/tex"]').forEach(node => {
+              const display = !!node.type.match(/; *mode=display/);
+              const math = new doc.options.MathItem(node.textContent, doc.inputJax[0], display);
+              const text = document.createTextNode('');
+              node.parentNode.replaceChild(text, node);
+              math.start = {node: text, delim: '', n: 0};
+              math.end = {node: text, delim: '', n: 0};
+              doc.math.push(math);
+            });
+          }, '', false],
+          insertedScript: [200, () => {
+            document.querySelectorAll('mjx-container').forEach(node => {
+              let target = node.parentNode;
+              if (target.nodeName.toLowerCase() === 'li') {
+                target.parentNode.classList.add('has-jax');
+              }
+            });
+          }, '', false]
+        }
+      }
+    };
+    (function () {
+      var script = document.createElement('script');
+      script.src = '//cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js';
+      script.defer = true;
+      document.head.appendChild(script);
+    })();
+  } else {
+    MathJax.startup.document.state(0);
+    MathJax.texReset();
+    MathJax.typeset();
+  }
+</script>
+
+    
+
+  
+
+  
+
+  <script async src="/js/cursor/click.js"></script>
+
+<link rel="stylesheet" href="//cdn.jsdelivr.net/npm/gitalk@1/dist/gitalk.min.css">
+
+<script>
+NexT.utils.loadComments(document.querySelector('#gitalk-container'), () => {
+  NexT.utils.getScript('//cdn.jsdelivr.net/npm/gitalk@1/dist/gitalk.min.js', () => {
+    var gitalk = new Gitalk({
+      clientID    : '581477a9710f647e6f45',
+      clientSecret: '1ed64b87e2add97d8eea831ad7273fbc8988dae3',
+      repo        : 'Zeroc0077.github.io',
+      owner       : 'Zeroc0077',
+      admin       : ['Zeroc0077'],
+      id          : '28575812702bdaaf4277e7ff8388aa24',
+        language: '',
+      distractionFreeMode: true
+    });
+    gitalk.render('gitalk-container');
+  }, window.Gitalk);
+});
+</script>
+
+</body>
+</html>
